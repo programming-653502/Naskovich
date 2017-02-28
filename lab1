@@ -1,0 +1,71 @@
+#include <vcl.h>
+#pragma hdrstop
+#include "stdio.h"
+#include "stdlib.h"
+#include <tchar.h>
+#include <math.h>
+
+//---------------------------------------------------------------------------
+
+#pragma argsused
+int _tmain(int argc, _TCHAR* argv[])
+{
+
+	int kd,ld, n, posdot1=0, posdot2=0,  mn1=0, mn2=0;
+
+	char str1[20], str2[20], str3[20], zn;
+	scanf("%[0123456789]s",&str1);
+	printf("%s","*\n");
+	scanf("%[01234567890]s",&str2);
+	printf("%s\n", "___________");
+	n=1;
+	for (int i=strlen(str1)-1; i>=0; i--) {
+		if (str1[i]=='.') {
+		   posdot1=strlen(str1)-i-1;
+		   n++;  }
+		else {
+		  zn = str1[i];
+		  kd=atoi(&zn);
+		  mn1=mn1+kd*pow(10.,strlen(str1)-i-n);
+		}
+	}
+	n=1;
+	for (int i=strlen(str2)-1; i>=0; i--) {
+		if (str2[i]=='.') {
+		   posdot2=strlen(str2)-i-1;
+		   n++;  }
+		else {
+		  zn = str2[i];
+		  kd=atoi(&zn);
+		  mn2=mn2+kd*pow(10.,strlen(str2)-i-n);
+		}
+	}
+	  //	itoa(k, str1, 10);
+
+
+	 itoa(mn2, str3, 10);
+
+		int S = 0;
+		for (int i = 0; i < strlen(str3); i++)
+		{
+			zn = str3[strlen(str3) - i - 1];
+			n=atoi(&zn);
+			S = mn1*n;
+			for (int j=0; j < strlen(str3)-i-1; j++) {
+			   printf("%s"," ");
+			}
+			printf("%d\n", S);
+		}
+		printf("%s\n", "___________");
+	itoa(mn1*mn2, str3, 10);
+	for (int i=0; i < strlen(str3); i++) {
+	   if (posdot1+posdot2>0 &&posdot1+posdot2==strlen(str3)-i) {
+		  printf("%s", ".");
+	   }
+	   zn=str3[i];
+	   printf("%c", zn);
+	}
+    printf("%s","\n");
+	system("pause");
+	return 0;
+}
