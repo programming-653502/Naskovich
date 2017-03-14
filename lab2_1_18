@@ -1,0 +1,73 @@
+#include <iostream.h>
+#include <vcl.h>
+#pragma hdrstop
+#include <tchar.h>
+//---------------------------------------------------------------------------
+
+#pragma argsused
+struct tarif
+{int trafic;
+int SMS;
+float price;
+int minutes;
+float overtrafic;
+AnsiString name;};
+
+float cost(struct tarif velcom, int x, int y);
+int _tmain(int argc, _TCHAR* argv[])
+{   SetConsoleCP(1251);
+   SetConsoleOutputCP(1251);
+
+   tarif *velcome = new tarif[2];
+   velcome[0].trafic = 1000;
+   velcome[0].price=9.9;
+   velcome[0].minutes = 100;
+   velcome[0].overtrafic = 0.01;
+   velcome[0].name = "Комфорт4";
+   velcome[1].trafic = 2000;
+   velcome[1].price= 14.9;
+   velcome[1].minutes = 200;
+   velcome[1].overtrafic = 0.007;
+   velcome[1].name = "Комфорт4";
+   velcome[2].trafic = 4000;
+   velcome[2].price= 16.9;
+   velcome[2].minutes = 300;
+   velcome[2].overtrafic = 0.005;
+   velcome[2].name = "Комфорт4";
+  int x,y, ind;
+  cout<<"Эта программа позволяет высчитать наиболее подходящий для вас тариф\n";
+  cout<<"Введите количество трафика   ";
+  cin>>x;
+  cout<<"Введите количество бесплатных минут   ";
+  cin>>y;
+  float z = 0, Sum=0, min;
+  for (int i = 0; i < 3; i++)
+  {
+   Sum = cost(velcome[i], x, y);
+   if (i >0)
+	{
+	if (Sum < min)
+	 {min = Sum;
+	  ind = i;
+	 }
+   else
+	 {min = Sum;
+	  ind = 0;
+	 }
+	}
+  }
+  cout<<"Ваш тариф -"<<velcome[ind].name<<"\n"<<"Стоимость тарифа - "<<min<<"\n";
+  cout<<"за подробной информацией обращайтесь к веб-сайту www.velcome.by\n";
+  system("pause");
+  return 0;
+}
+
+float cost(struct tarif velcom,int x, int y )
+{
+ float k = 0;
+ if (x > velcom.trafic)
+  k = velcom.price + (x - velcom.trafic)*velcom.overtrafic;
+ else
+  k = velcom.price;
+ return k;
+}
