@@ -9,13 +9,14 @@
 
 #pragma argsused
 int _tmain(int argc, _TCHAR* argv[])
-{
-
+{       SetConsoleCP(1251);
+        SetConsoleOutputCP(1251);
 	int kd,ld, n, posdot1=0, posdot2=0,  mn1=0, mn2=0;
 
 	char str1[20], str2[20], str3[20], zn;
+	printf("%s","Введите первое число*\n");
 	scanf("%s",&str1);
-	printf("%s","*\n");
+	printf("%s","введите второе число*\n");
 	scanf("%s",&str2);
 	printf("%s\n", "___________");
 	n=1;
