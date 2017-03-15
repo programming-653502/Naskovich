@@ -1,19 +1,22 @@
+
 #include <vcl.h>
 #pragma hdrstop
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 #include <tchar.h>
 #include <math.h>
-
 //---------------------------------------------------------------------------
 
 #pragma argsused
 int _tmain(int argc, _TCHAR* argv[])
-{       SetConsoleCP(1251);
-        SetConsoleOutputCP(1251);
-	int kd,ld, n, posdot1=0, posdot2=0,  mn1=0, mn2=0;
+{   SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 
-	char str1[20], str2[20], str3[20], zn;
+	int kd,ld, n, sProm=0, posdot1=0, posdot2=0, result[20]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	long int  mn1=0, mn2=0;
+	setlocale (LC_ALL, "rus");
+	char str1[20], str2[20], str3[20];
 	printf("%s","Введите первое число*\n");
 	scanf("%s",&str1);
 	printf("%s","введите второе число*\n");
@@ -25,7 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		   posdot1=strlen(str1)-i-1;
 		   n++;  }
 		else {
-		  zn = str1[i];
+		  char zn = str1[i];
 		  kd=atoi(&zn);
 		  mn1=mn1+kd*pow(10.,strlen(str1)-i-n);
 		}
@@ -36,37 +39,65 @@ int _tmain(int argc, _TCHAR* argv[])
 		   posdot2=strlen(str2)-i-1;
 		   n++;  }
 		else {
-		  zn = str2[i];
+		  char zn = str2[i];
 		  kd=atoi(&zn);
 		  mn2=mn2+kd*pow(10.,strlen(str2)-i-n);
 		}
 	}
-	  //	itoa(k, str1, 10);
-
 
 	 itoa(mn2, str3, 10);
 
-		int S = 0;
+		unsigned long int S = 0;
+        int j=19;
 		for (int i = 0; i < strlen(str3); i++)
 		{
-			zn = str3[strlen(str3) - i - 1];
+			char zn = str3[strlen(str3) - i - 1];
 			n=atoi(&zn);
 			S = mn1*n;
 			for (int j=0; j < strlen(str3)-i-1; j++) {
 			   printf("%s"," ");
 			}
+
+			   sProm=sProm+S;
+			   if (sProm>10)
+				   n=sProm-sProm/10*10;
+			   else
+				   n=sProm;
+			   sProm=sProm/10;
+
+			   if (result[j]+n>10) {
+				 result[j]=result[j]+n-10;
+				 sProm++;
+			   }
+			   else
+				  result[j]=result[j]+n;
+			   j--;
+
 			printf("%d\n", S);
 		}
+		while (sProm>0){
+			 if (sProm>10) {
+				n=sProm-sProm/10*10;
+				sProm=sProm/10;
+			 }
+			 else {
+				n=sProm;
+				sProm=0;
+			 }
+			 result[j]=n;
+			 j--;
+		}
+		bool flag=false;
 		printf("%s\n", "___________");
-	itoa(mn1*mn2, str3, 10);
-	for (int i=0; i < strlen(str3); i++) {
-	   if (posdot1+posdot2>0 &&posdot1+posdot2==strlen(str3)-i) {
-		  printf("%s", ".");
-	   }
-	   zn=str3[i];
-	   printf("%c", zn);
-	}
-    printf("%s","\n");
+		for (int i=0; i < 20; i++) {
+		   if (posdot1+posdot2>0 &&posdot1+posdot2==20-i)
+		   printf("%s", ".");
+		   if (result[i]!=0||flag) {
+			  printf("%d",result[i]);
+			  flag=true;
+			  }
+		}
+	printf("%s","\n");
 	system("pause");
 	return 0;
 }
