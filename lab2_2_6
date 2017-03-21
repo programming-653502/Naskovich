@@ -1,33 +1,59 @@
-#include <vcl.h>
-#pragma hdrstop
-#include <math.h>
-#include <tchar.h>
-#include <stdio.h>
+// ConsoleApplication8.cpp : Defines the entry point for the console application.
+//
 
-//---------------------------------------------------------------------------
+#include "stdafx.h"
+#include "iostream"
+#include "cmath"
+#include "locale"
 
-#pragma argsused
+float func(float x, int n);
+float fact(int n);
 
-int fact(int n)
-  { double fact1=1;
-  int a = 2*n-1;
-	for (int i = 2; i <= a; i++)
-	   fact1*=i;
+using namespace std;
 
-   return fact1;
-  }
-
-int _tmain(int argc, _TCHAR* argv[])
-{ double x, func, SIN, fact1;
-   int n;
-	printf("%s", "enter X   ");
-	scanf("%f",&x);
-	printf("%s", "enter N   ");
-	scanf("%d",&n);
-	SIN = sin(x);
-	for (int i = 1; i <= n; i++)
-	 func += powl (-1, i - 1) * powl (x, 2 * i - 1) / fact1;
-	printf ("%f=%f\n", SIN, func);
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	loat left, right;
+	int n;
+	float x, e;
+	cout << "Введите X: ";
+	cin >> x;
+	cout << "Введите погрешность E: ";
+	cin >> e;
+	left = sin(x);
+	for (int i = 0; i < 1000; i++)
+	{
+		right = func(x, i);
+		if (abs(left - right) < e)
+		{
+			n = i;
+			break;
+		}
+	}
+	cout << "sin(x) = " << left << " . Разложение = " << right << "\n";
+	cout << "Введите N = " << n<<"\n";
+	
 	system("pause");
 	return 0;
+}
+
+float func(float x, int n)
+{
+	float result = 0;
+	for (int i = 1; i <= n; i++)
+	{
+		result += pow(-1, i - 1) * pow(x, 2 * i - 1) / fact(2 * i - 1);
+	}
+	return result;
+}
+
+float fact(int n)
+{
+	float res = 1;
+	for (int i = 2; i <= n; i++)
+	{
+		res *= i;
+	}
+	return res;
 }
