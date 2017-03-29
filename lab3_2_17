@@ -1,0 +1,66 @@
+// ConsoleApplication17.cpp : Defines the entry point for the console application.
+//
+
+
+#include "stdafx.h"
+#include "cstdio"
+#include "cstdlib"
+#include "locale"
+
+
+bool func(int **Mas, int k, int s, int z)
+{
+	for (int i = k; i < k + z; i++)
+		for (int j = s; j < s + z; j++)
+		{
+			if (Mas[i][j] == 1)
+				return false;
+		}
+	return true;
+}
+int m, n, z;
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	bool flag = false;
+	printf("Число строк - ");
+	scanf_s("%d", &m);	
+	printf("Число столбцов - ");
+	scanf_s("%d", &n);	
+	int** Mas = new int *[m];
+	for (int i = 0; i < m; ++i)
+		Mas[i] = new int[n];
+	printf("Размер квдрата - ");
+	scanf_s("%d", &z);
+	printf("Исходный массив\n");
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			Mas[i][j] = rand() % 2;
+			printf("%d", Mas[i][j]);
+		}
+		printf("\n");
+	}
+	for (int i = 0; i < m - z + 1; i++)
+	{
+		for (int j = 0; j < n - z + 1; j++)
+		{
+			if (Mas[i][j] == 0)
+				if (func(Mas, i, j, z))
+				{
+					printf("Координаты левого угла x= %d y = %d%s", i + 1, j + 1, "\n");
+					flag = true;
+					break;
+				}
+		}
+		if (flag)
+			break;
+	}
+	if (!flag)
+		printf("Матрицы не существует");
+	for (int i = 0; i < m; i++)
+		delete[]Mas[i];
+	system("pause");
+	return 0;
+}
