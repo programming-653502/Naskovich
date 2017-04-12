@@ -1,0 +1,62 @@
+
+#include <vcl.h>
+#pragma hdrstop
+#include <stdio.h>
+#include <tchar.h>
+#include <windows.h>
+
+//---------------------------------------------------------------------------
+
+#pragma argsused
+int _tmain(int argc, _TCHAR* argv[])
+{
+SetConsoleCP(1251);
+SetConsoleOutputCP(1251);
+ FILE *F;
+ bool flag = true;
+ int k;
+ AnsiString S = "АБВЕКМНОРСТХ", slovo, stroka;
+ char s[80],str[80];
+ F = fopen("d:\\labas\\text.txt", "r");
+ do
+ {
+  fgets(str,80,F);
+  stroka = AnsiString(str);
+  do
+   {
+	slovo = stroka.SubString(1,stroka.AnsiPos(" ")-1);
+	flag = true;
+	for (int i = 0;  i< slovo.Length(); i++)
+	 {
+	  if (!S.AnsiPos(slovo.SubString(i,1).UpperCase()))
+	   {
+		flag = false;
+		break;
+	   }
+	 }
+	if (flag)
+	printf("%s ",slovo.c_str());
+	stroka = stroka.SubString(stroka.AnsiPos(" ")+1,stroka.Length());
+	 }
+ while (stroka.AnsiPos(" "));
+ if (stroka.Length()>0)
+  {
+   flag = true;
+   for (int i = 0;  i< stroka.Length(); i++)
+   {
+	if (!S.AnsiPos(stroka.SubString(i,1).UpperCase()))
+	 {
+	  flag = false;
+	  break;
+	 }
+   }
+   if (flag)
+   printf("%s\n",stroka.c_str());
+  }
+ }
+ while (!feof(F)) ;
+ fclose(F);
+ system("pause");
+ return 0;
+
+}
