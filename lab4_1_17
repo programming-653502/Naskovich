@@ -1,0 +1,31 @@
+#pragma hdrstop
+#include <stdio.h>
+#include <tchar.h>
+//---------------------------------------------------------------------------
+ using namespace std;
+#pragma argsused
+
+void _tmain(int argc, _TCHAR* argv[])
+{
+	char str[80];
+	int flag = 0 ;
+	int j, count1, count2;
+
+
+	printf("Enter the string\n");
+	gets(str);
+	for (int i = 0; i < 80; i++)
+	{
+	 if (str[i] == '(')
+		 flag++;
+	 else if (str[i]==')' && flag>0)
+		  flag--;
+	 else if (str[i]==')'&&flag<=0)
+		   printf("brecket is absent\n");
+			 else
+		  if (flag>0) str[i]=' ';
+	}
+	if (flag == 0) 	  printf("%s\n",str);
+	if (flag!=0) printf("brecket is absent\n");
+	system("pause");
+}
