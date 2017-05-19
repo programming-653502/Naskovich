@@ -1,0 +1,80 @@
+#pragma hdrstop
+#include <stdio.h>
+#include <tchar.h>
+#include <iostream.h>
+//---------------------------------------------------------------------------
+
+#pragma argsused
+struct Node {
+   int x;
+   Node *l, *r;
+};
+
+class tree {
+	public :
+		int maxLevel;
+		Node *Tree ;
+		void add_node(int x, Node *MyTree);
+		tree() : Tree(NULL){}
+		void height(Node *MyTree, int level);
+};
+
+void tree::height(Node *MyTree, int level) {
+	if (MyTree->l != NULL) {
+		level++;
+		height(MyTree->l, level);
+	}
+	else if (MyTree->r != NULL) {
+		level++;
+		height(MyTree->r,level);
+	}
+	else {
+		if (level> maxLevel)
+		maxLevel=level;
+	}
+}
+
+void tree::add_node(int x, Node *MyTree) {
+	if (NULL == MyTree) {
+		Node *MyTree = new Node;
+		MyTree->x = x;
+		MyTree -> l = MyTree -> r = NULL;
+		Tree = MyTree;
+	}
+	else {
+		if (x < MyTree->x) {
+			if (MyTree->l != NULL)
+				add_node(x, MyTree->l);
+			else {
+				MyTree->l = new Node;
+				MyTree->l->l = MyTree->l->r = NULL;
+				MyTree->l->x = x;
+			}
+		}
+			if (x >= MyTree->x) {
+				if (MyTree->r != NULL)
+					add_node(x, MyTree->r);
+				else {
+					MyTree->r = new Node;
+					MyTree->r->l = MyTree->r->r = NULL;
+					MyTree->r->x = x;
+				}
+			}
+	}
+}
+
+int _tmain(int argc, _TCHAR* argv[]) {
+	char str[80];
+	tree *obj = new tree;
+	printf("Enter the string\n (please, don't use 'space')\n");
+	gets(str);
+	for (int i = 0; i < strlen(str); i++) {
+		int b = (int)str[i];
+		obj->add_node(b, obj->Tree);
+	}
+	obj->maxLevel = 0;
+	obj->height(obj->Tree, 0);
+	printf("%s%d\n", "Max level = ", obj->maxLevel+1);
+	system("pause");
+	return 0;
+}
