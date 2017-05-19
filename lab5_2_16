@@ -66,8 +66,8 @@ void tree::add_node(int x, Node *MyTree) {
 int _tmain(int argc, _TCHAR* argv[]) {
 	char str[80];
 	tree *obj = new tree;
-	printf("Enter the string\n (please, don't use 'space')\n");
-	gets(str);
+	printf("Enter the string\n");
+	scanf("%s", str);
 	for (int i = 0; i < strlen(str); i++) {
 		int b = (int)str[i];
 		obj->add_node(b, obj->Tree);
