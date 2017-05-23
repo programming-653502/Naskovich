@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <vcl.h>
+#pragma hdrstop
+#include <string.h>
+#include <tchar.h>
+#include <iostream.h>
+//---------------------------------------------------------------------------
+
+#pragma argsused
+
+struct Node {
+	 AnsiString x, InvX;
+	 Node *Next,*Prev;
+ };
+
+class List {
+	Node *Head,*Tail;
+public:
+	List():Head(NULL),Tail(NULL){};
+	~List();
+	int Count();
+	void Show(bool flag);
+	void Add(AnsiString x);
+	int Sort(AnsiString *x, int index);
+   //	void ShowInverse();
+};
+
+List::~List() {
+	while (Head) {
+		Tail=Head->Next;
+		delete Head;
+		Head=Tail;
+	}
+}
+int List::Count () {
+	int count = 0;
+	Node *temp = Head;
+	while (temp!=NULL) {
+		temp = temp->Next;
+		count ++;
+	}
+	return count;
+}
+void List::Add(AnsiString x) {
+	Node *temp = new Node;
+	temp->Next = NULL;
+	temp->x = x;
+
+	for (int i = x.Length(); i > 0; i--)
+		 temp->InvX += x.SubString(i,1);
+
+//		temp->InvX = x.SubString(x.AnsiPos(x.Length()),1);/
+	if (Head != NULL) {
+		temp->Prev = Tail;
+		Tail->Next = temp;
+		Tail = temp;
+   }
+   else {
+	   temp->Prev = NULL;
+	   Head = Tail = temp;
+   }
+}
+
+void List::Show(bool flag) {
+	Node *temp= new Node;
+	temp = Head;
+	while (temp!=NULL) {
+		if (flag)
+			cout<<temp->x.c_str()<<" \n";
+		else
+			cout<<temp->InvX.c_str()<<" \n";
+		temp = temp->Next;
+	}
+}
+
+int List::Sort(AnsiString *x, int index) {
+	Node *temp=Head;
+	while (temp!=NULL) {
+	x[index] = temp->x;
+	index++;
+	temp = temp->Next;
+	}
+	return index;
+}
+
+//-------------------------------------------------------
+
+struct Stack {
+	List * MyList;
+	Stack *Next,*Head;
+	};
+struct OrderStack {
+	AnsiString word;
+	OrderStack *Next,*Head;
+	};
+
+void AddOrderStack(AnsiString string , OrderStack *&MyStack) {
+
+	OrderStack *temp=new OrderStack;
+	temp->word=string;
+	temp->Next = MyStack->Head;
+	MyStack->Head = temp;
+}
+void AddStack(AnsiString string , Stack *&MyStack) {
+	AnsiString word;
+	List *spic  = new List;
+	while (!string.IsEmpty()) {
+		if (string.AnsiPos(" ") > 0 ) {
+			word = string.SubString(1,string.AnsiPos(" ")-1);
+			string = string.SubString(string.AnsiPos(" ")+1,string.Length());
+			spic->Add(word);
+		}
+		else {
+			word = string.Trim();
+			spic->Add(word);
+			string = "";
+		}
+	}
+	Stack *temp=new Stack;
+	temp->MyList = spic;
+	temp->Next = MyStack->Head;
+	MyStack->Head = temp;
+}
+
+void ShowStack(Stack *MyStack, bool flag) {
+	Stack *temp = MyStack->Head;
+	while (temp!=NULL) {
+	temp->MyList->Show(flag);
+	temp=temp->Next;
+	}
+}
+
+int CountStack(Stack *MyStack) {
+	int count = 0;
+	Stack *temp = MyStack->Head;
+		while (temp!=NULL) {
+		count += temp->MyList->Count();
+		temp=temp->Next;
+	}
+	return count;
+}
+
+void SortStack(Stack *MyStack, AnsiString *arr) {
+	int count = 0;
+	Stack *temp = MyStack->Head;
+		while (temp!=NULL) {
+			count = temp->MyList ->Sort(arr,count);
+		temp=temp->Next;
+	}
+}
+
+//--------------------------------------------------------
+
+int _tmain(int argc, _TCHAR* argv[]) {
+	AnsiString string;
+	FILE *fp ;
+	int count;
+	Stack *MyStack = new Stack;
+	OrderStack *MyOrderStack = new OrderStack;
+	char s[80];
+	if ((fp = fopen("d:\\labas\\text2.txt","r"))!=NULL) {
+		do {
+			fgets(s,80,fp);
+			string = AnsiString(s).Trim();
+			AddStack(string,MyStack);
+		}
+		while ( !feof(fp) );
+	}
+	count = CountStack(MyStack);
+	AnsiString *Arr = new AnsiString [count];
+	SortStack(MyStack, Arr);
+	for (int i = 0; i < count; i++) {
+		for (int j = 0; j < count - i - 1; j++) {
+			 if (Arr[j] > Arr[j+1] ) {
+				 string = Arr[j];
+				 Arr[j] = Arr[j+1];
+				 Arr[j+1] = string;
+			 }
+		}
+	}
+
+	ShowStack(MyStack,false);
+	ShowStack(MyStack,true);
+	for (int i = 0; i < count; i++) {
+		 cout<<Arr[i].c_str()<<"\n";
+         AddOrderStack(Arr[i],MyOrderStack);
+	}
+	system("pause");
+	return 0;
+}
