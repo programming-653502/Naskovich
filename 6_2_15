@@ -1,0 +1,226 @@
+#include <vcl.h>
+#pragma hdrstop
+#include <stdio.h>
+#include <tchar.h>
+#include <stdio.h>
+//---------------------------------------------------------------------------
+
+#pragma argsused
+struct employer {
+	int IDjob, IDemp, Age, Pay;
+	AnsiString City, Spec, Post, Name, Sex, Employment, Family, Education;
+	employer *Next;
+};
+struct employee {
+	int IDemp, IDjob, Birthdate, Pay;
+	AnsiString City, Spec, Name, Sex, Employment, Family, Education, Contact;
+	employee *Next;
+};
+
+
+
+//------------------------------------------------------------------
+class ListJob {
+
+public:
+employer *Head;
+	ListJob():Head(NULL){};
+	~ListJob();
+	void Show();
+ //	friend ListEmp;
+	void Add(int IDjob, int Age, int Pay,  AnsiString Education, AnsiString City,
+			 AnsiString Spec, AnsiString Post, AnsiString Sex, AnsiString Employment,
+			 AnsiString Family, AnsiString Name);
+	int Search(int IDemp, int Age, int Pay,  AnsiString Education, AnsiString City,
+			   AnsiString Spec, AnsiString Sex, AnsiString Employment,
+			   AnsiString Family, employer *JOB, AnsiString Name);
+};
+
+ListJob::~ListJob() {
+	while (Head) {
+		employer *temp = new employer;
+		delete Head;
+		Head = temp;
+	}
+}
+
+void ListJob::Add(int IDjob, int Age, int Pay,  AnsiString Education, AnsiString City,
+				  AnsiString Spec, AnsiString Post, AnsiString Sex, AnsiString Employment,
+				  AnsiString Family, AnsiString Name) {
+		employer *temp = new employer;
+		temp->Next = Head;
+		temp->IDemp = 0;
+		temp->IDjob = IDjob;
+		temp->Age = Age;
+		temp->Pay = Pay;
+		temp->Post = Post;
+		temp->Education = Education;
+		temp->City = City;
+		temp->Spec = Spec;
+		temp->Name = Name;
+		temp->Sex = Sex;
+		temp->Employment = Employment;
+		temp->Family = Family;
+		Head = temp;
+}
+//find job--------------------------------------
+int ListJob::Search(int IDemp, int Age, int Pay,  AnsiString Education, AnsiString City,
+					 AnsiString Spec, AnsiString Sex, AnsiString Employment,
+					 AnsiString Family, employer *JOB, AnsiString Name) {
+	 int rezult = 0;
+	 if (JOB != NULL) {
+		if (JOB->IDemp == 0) {
+			if (JOB->Age <= Age && JOB->Pay >= Pay &&
+				JOB->Education == Education && JOB->Sex == Sex &&
+				JOB->Employment ==	Employment && JOB->Family == Family
+				 ) {
+				JOB->IDemp = IDemp;
+				JOB->Name = Name;
+				return JOB->IDjob;
+			}
+		}
+	  rezult = Search( IDemp, Age, Pay, Education, City, Spec, Sex, Employment,
+	  Family, JOB->Next, Name);
+	 }
+
+	 return rezult;
+}
+//-------------------------------------------------------
+class ListEmp {
+
+public:
+	employee *Head;
+	ListEmp():Head(NULL){};
+	~ListEmp();
+	void Show();
+
+	void Add(int IDemp,int IDjob, int Birthdate, int Pay, AnsiString Contact,
+			 AnsiString Education, AnsiString City, AnsiString Spec, AnsiString Sex,
+			 AnsiString Employment, AnsiString Family, AnsiString Name);
+	void find(ListJob * List, employer *emp);
+};
+
+ListEmp::~ListEmp() {
+	while (Head) {
+		employee *temp = new employee;
+		delete Head;
+		Head = temp;
+	}
+}
+
+void ListEmp::Add(int IDemp,int IDjob, int Birthdate, int Pay, AnsiString Contact,
+				  AnsiString Education, AnsiString City, AnsiString Spec,
+				  AnsiString Sex, AnsiString Employment, AnsiString Family,
+				  AnsiString Name) {
+	employee *temp = new employee;
+	temp->Next=Head;
+	temp->IDemp = IDemp;
+	temp->IDjob = IDjob;
+	temp->Birthdate = Birthdate;
+	temp->Pay = Pay;
+	temp->Contact = Contact;
+	temp->Education = Education;
+	temp->City = City;
+	temp->Spec = Spec;
+	temp->Name = Name;
+	temp->Sex = Sex;
+	temp->Employment = Employment;
+	temp->Family = Family;
+	Head = temp;
+}
+
+void ListEmp::find(ListJob * List, employer *emp) {
+	 int rezult;
+	 employee *temp = new employee;
+	 temp=Head;
+	 while (temp!=NULL){
+		 if (temp->IDjob == 0) {
+			 rezult = List->Search(temp->IDemp, temp->Birthdate,temp->Pay,  temp->Education, temp->City,
+			 temp->Spec, temp->Sex, temp->Employment,
+			 temp->Family, List->Head, temp->Name);
+			 if (rezult != 0) {
+			 temp->IDjob = rezult;
+			 printf("%d\t%s\t%s\n", temp->IDjob,emp->Name, temp->Name);
+			 }
+		 }
+		 temp=temp->Next;
+	 }
+}
+
+int _tmain(int argc, _TCHAR* argv[]) {
+	char str1[80], str2[80];
+	AnsiString string;
+	FILE *fp, *file;
+	fp = fopen("d:\\labas\\7lab2.txt","r");
+	file = fopen ("d:\\labas\\7lab1.txt","r");
+	ListJob * list = new ListJob;
+	ListEmp * WorkerList = new ListEmp;
+	employer *emp = new employer;
+	employee *person = new employee;
+	do {
+		fgets(str1,80,fp);
+		string = AnsiString(str1);
+		emp->IDjob = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Name = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->City = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Post = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Spec =  string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Age = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Pay = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Education =  string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Sex = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Employment =  string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		emp->Family = string.Trim();
+		list->Add(emp->IDjob,emp->Age, emp->Pay, emp->Education, emp->City,
+				  emp->Spec,emp->Post, emp->Sex, emp->Employment,
+				  emp->Family, emp->Name);
+	}
+	while (!feof(fp));
+
+	do {
+		fgets(str1,80,file);
+		string = AnsiString(str1);
+		person->IDemp = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Name =string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Education = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->City = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Birthdate = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Pay = string.SubString(1,string.AnsiPos("|")-1).ToInt();
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Spec = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Sex =string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Employment = string.SubString(1,string.AnsiPos("|")-1);
+		string = string.SubString(string.AnsiPos("|")+1,string.Length());
+		person->Family = string.Trim();
+		WorkerList->Add(person->IDemp, 0, person->Birthdate, person->Pay, person->Contact,
+					person->Education, person->City, person->Spec, person->Sex,
+					person->Employment, person->Family, person->Name);
+	}
+	while (!feof(file));
+
+	list->Search(person->IDemp, person->Birthdate,person->Pay, person->Education,
+				 person->City, person->Spec,person->Sex, person->Employment,
+				 person->Family, emp,person->Name);
+	WorkerList->find(list, emp);
+
+
+	system("pause");
+	return 0;
+}
